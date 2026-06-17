@@ -1,0 +1,44 @@
+# Cyber Defense SOC Lab — Filebeat (Linux hosts -> Elasticsearch)
+# Ships auth.log / secure / syslog so SOC-001 & SOC-003 see Linux activity.
+filebeat.inputs:
+  - type: filestream
+    id: linux-auth
+    enabled: true
+    paths:
+      - /var/log/auth.log     # Debian/Ubuntu
+      - /var/log/secure       # RHEL/CentOS
+    fields:
+      soc_lab.source: linux-auth
+    fields_under_root: true
+
+  - type: filestream
+    id: linux-syslog
+    enabled: true
+    paths:
+      - /var/log/syslog
+      - /var/log/messages
+
+# The system module parses sshd 'Failed password' / sudo events into ECS fields
+filebeat.modules:
+  - module: system
+    auth:
+      enabled: true
+    syslog:
+      enabled: true
+
+processors:
+  - add_host_metadata: ~
+  - add_fields:
+      target: ''
+      fields:
+        soc_lab.environment: cyberlab.local
+
+output.elasticsearch:
+  hosts: ["https://elastic:9200"]
+  username: "filebeat_writer"
+  password: "${ES_PWD}"
+  index: "filebeat-soclab-%{+yyyy.MM.dd}"
+
+setup.template.name: "filebeat-soclab"
+setup.template.pattern: "filebeat-soclab-*"
+setup.ilm.enabled: false

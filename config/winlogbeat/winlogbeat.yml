@@ -1,0 +1,32 @@
+# Cyber Defense SOC Lab — Winlogbeat (Windows hosts -> Elasticsearch)
+# Ships Security + Sysmon + PowerShell channels that the SOC Lab rules consume.
+winlogbeat.event_logs:
+  - name: Security
+    event_id: 4624, 4625, 4672, 4688, 4720, 4728, 4732, 4624, 7045
+    ignore_older: 72h
+  - name: Microsoft-Windows-Sysmon/Operational
+    # Sysmon Event IDs 1 (proc), 3 (net), 11 (file), 13 (registry)
+  - name: Microsoft-Windows-PowerShell/Operational
+    event_id: 4104
+  - name: System
+  - name: Application
+
+# Tag so the SIEM can pivot on environment quickly
+processors:
+  - add_fields:
+      target: ''
+      fields:
+        soc_lab.environment: cyberlab.local
+        soc_lab.classification: "UNCLASSIFIED // TRAINING"
+
+output.elasticsearch:
+  hosts: ["https://elastic:9200"]
+  username: "winlogbeat_writer"
+  password: "${ES_PWD}"
+  index: "winlogbeat-soclab-%{+yyyy.MM.dd}"
+
+setup.template.name: "winlogbeat-soclab"
+setup.template.pattern: "winlogbeat-soclab-*"
+setup.ilm.enabled: false
+
+logging.level: info

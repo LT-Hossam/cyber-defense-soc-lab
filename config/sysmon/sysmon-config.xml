@@ -1,0 +1,97 @@
+<!--
+  Cyber Defense SOC Lab — Sysmon configuration
+  A trimmed, high-signal config aligned to the lab's detections (SOC-001..SOC-008).
+  Inspired by the SwiftOnSecurity / Olaf Hartong community baselines.
+
+  Install:   sysmon64.exe -accepteula -i sysmon-config.xml
+  Update:    sysmon64.exe -c sysmon-config.xml
+
+  Schema 4.50+. Event IDs focused on what the SOC Lab rules consume:
+    1  ProcessCreate     -> SOC-004 (PowerShell), SOC-005 (LOLBin/Temp exec)
+    3  NetworkConnect    -> beaconing / C2 follow-up to suspicious PowerShell
+    11 FileCreate        -> SOC-005 (EICAR / dropped payloads)
+    13 RegistryValueSet  -> persistence via Run keys
+-->
+<Sysmon schemaversion="4.50">
+  <HashAlgorithms>SHA256,IMPHASH</HashAlgorithms>
+  <CheckRevocation/>
+
+  <EventFiltering>
+
+    <!-- ================= ProcessCreate (ID 1) ================= -->
+    <RuleGroup name="proc-create" groupRelation="or">
+      <ProcessCreate onmatch="include">
+        <!-- script hosts & shells: powers SOC-004 -->
+        <Image condition="image">powershell.exe</Image>
+        <Image condition="image">pwsh.exe</Image>
+        <Image condition="image">cmd.exe</Image>
+        <Image condition="image">wscript.exe</Image>
+        <Image condition="image">cscript.exe</Image>
+        <Image condition="image">mshta.exe</Image>
+        <Image condition="image">wmic.exe</Image>
+        <Image condition="image">regsvr32.exe</Image>
+        <Image condition="image">rundll32.exe</Image>
+        <!-- common LOLBins / remote-exec: powers SOC-005 / SOC-007 -->
+        <Image condition="image">psexec.exe</Image>
+        <Image condition="image">PsExec64.exe</Image>
+        <Image condition="image">certutil.exe</Image>
+        <Image condition="image">bitsadmin.exe</Image>
+        <!-- anything launched out of user-writable staging dirs -->
+        <Image condition="contains">\AppData\Local\Temp\</Image>
+        <Image condition="contains">\Users\Public\</Image>
+        <Image condition="contains">\Downloads\</Image>
+        <!-- obfuscation / download tokens on the command line -->
+        <CommandLine condition="contains">-enc</CommandLine>
+        <CommandLine condition="contains">-EncodedCommand</CommandLine>
+        <CommandLine condition="contains">-nop</CommandLine>
+        <CommandLine condition="contains">hidden</CommandLine>
+        <CommandLine condition="contains">FromBase64String</CommandLine>
+        <CommandLine condition="contains">DownloadString</CommandLine>
+        <CommandLine condition="contains">IEX</CommandLine>
+        <CommandLine condition="contains">Invoke-Expression</CommandLine>
+        <CommandLine condition="contains">Net.WebClient</CommandLine>
+      </ProcessCreate>
+    </RuleGroup>
+
+    <!-- ================= NetworkConnect (ID 3) ================= -->
+    <RuleGroup name="net-connect" groupRelation="or">
+      <NetworkConnect onmatch="include">
+        <!-- script hosts making outbound connections = likely C2 -->
+        <Image condition="image">powershell.exe</Image>
+        <Image condition="image">pwsh.exe</Image>
+        <Image condition="image">cscript.exe</Image>
+        <Image condition="image">wscript.exe</Image>
+        <Image condition="image">mshta.exe</Image>
+        <Image condition="image">rundll32.exe</Image>
+        <Image condition="image">regsvr32.exe</Image>
+      </NetworkConnect>
+    </RuleGroup>
+
+    <!-- ================= FileCreate (ID 11) ================= -->
+    <RuleGroup name="file-create" groupRelation="or">
+      <FileCreate onmatch="include">
+        <!-- executables / scripts written to staging dirs: powers SOC-005 -->
+        <TargetFilename condition="contains">\AppData\Local\Temp\</TargetFilename>
+        <TargetFilename condition="contains">\Users\Public\</TargetFilename>
+        <TargetFilename condition="contains">\Downloads\</TargetFilename>
+        <TargetFilename condition="end with">.exe</TargetFilename>
+        <TargetFilename condition="end with">.dll</TargetFilename>
+        <TargetFilename condition="end with">.ps1</TargetFilename>
+        <TargetFilename condition="end with">.bat</TargetFilename>
+        <TargetFilename condition="end with">.scr</TargetFilename>
+        <TargetFilename condition="end with">.hta</TargetFilename>
+      </FileCreate>
+    </RuleGroup>
+
+    <!-- ================= RegistryValueSet (ID 13) — persistence ================= -->
+    <RuleGroup name="reg-persist" groupRelation="or">
+      <RegistryEvent onmatch="include">
+        <TargetObject condition="contains">\CurrentVersion\Run</TargetObject>
+        <TargetObject condition="contains">\CurrentVersion\RunOnce</TargetObject>
+        <TargetObject condition="contains">\Services\</TargetObject>
+        <TargetObject condition="contains">\CurrentVersion\Image File Execution Options\</TargetObject>
+      </RegistryEvent>
+    </RuleGroup>
+
+  </EventFiltering>
+</Sysmon>

@@ -1,0 +1,110 @@
+<!--
+  Cyber Defense SOC Lab — custom Wazuh detection rules
+  Auto-generated from soclab/rules.py  (python -m soclab export-wazuh)
+  Place in: /var/ossec/etc/rules/local_rules.xml  then restart wazuh-manager
+-->
+<group name="soc_lab,attack,">
+
+  <!-- SOC-001 :: Brute Force / Password Spraying -->
+  <rule id="100100" level="12" frequency="5" timeframe="60">
+    <if_group>authentication_failed</if_group>
+    <field name="win.system.eventID">4625</field>
+    <same_source_ip />
+    <description>Brute Force / Password Spraying — HIGH — Brute force: 5+ failed logons from 10.10.20.66 in 60s</description>
+    <mitre>
+      <id>T1110.001</id>
+      <id>T1110.003</id>
+    </mitre>
+    <group>credential_access,</group>
+  </rule>
+
+  <!-- SOC-002 :: Port Scan / Network Reconnaissance -->
+  <rule id="100200" level="8" frequency="15" timeframe="30">
+    <if_group>firewall</if_group>
+    <field name="data.action">connection_attempt</field>
+    <same_source_ip />
+    <description>Port Scan / Network Reconnaissance — MEDIUM — Port scan: 15+ ports from 10.10.20.66 on 10.10.10.10</description>
+    <mitre>
+      <id>T1046</id>
+      <id>T1595</id>
+    </mitre>
+    <group>discovery,reconnaissance,</group>
+  </rule>
+
+  <!-- SOC-003 :: Privilege Escalation (Special Privileges Assigned) -->
+  <rule id="100300" level="12">
+    <if_group>windows</if_group>
+    <field name="win.system.eventID">4672</field>
+    <description>Privilege Escalation (Special Privileges Assigned) — HIGH — Priv-esc: SeDebugPrivilege granted to non-admin svc_backup</description>
+    <mitre>
+      <id>T1078</id>
+      <id>T1548</id>
+    </mitre>
+    <group>privilege_escalation,</group>
+  </rule>
+
+  <!-- SOC-004 :: Suspicious PowerShell Activity -->
+  <rule id="100400" level="12">
+    <if_group>sysmon</if_group>
+    <field name="win.eventdata.commandLine">(?i)(-enc|-nop|hidden|downloadstring|iex|frombase64)</field>
+    <description>Suspicious PowerShell Activity — HIGH — Suspicious PowerShell (encoded + hidden) on WIN-CLIENT01</description>
+    <mitre>
+      <id>T1059.001</id>
+      <id>T1027</id>
+      <id>T1105</id>
+    </mitre>
+    <group>execution,defense_evasion,</group>
+  </rule>
+
+  <!-- SOC-005 :: Malware Execution / EICAR Detection -->
+  <rule id="100500" level="14">
+    <if_group>windows,sysmon</if_group>
+    <field name="data.signature">EICAR-Test-File</field>
+    <description>Malware Execution / EICAR Detection — CRITICAL — Malware EICAR-Test-File on WIN-CLIENT01 (quarantined)</description>
+    <mitre>
+      <id>T1204</id>
+      <id>T1059</id>
+      <id>T1105</id>
+    </mitre>
+    <group>execution,defense_evasion,</group>
+  </rule>
+
+  <!-- SOC-006 :: Repeated Failed Login Attempts (single account) -->
+  <rule id="100600" level="8" frequency="3" timeframe="120">
+    <if_group>authentication_failed</if_group>
+    <field name="win.system.eventID">4625</field>
+    <same_field>user</same_field>
+    <description>Repeated Failed Login Attempts (single account) — MEDIUM — 3+ failed logins for account 'administrator'</description>
+    <mitre>
+      <id>T1110</id>
+    </mitre>
+    <group>credential_access,</group>
+  </rule>
+
+  <!-- SOC-007 :: Lateral Movement (remote logon / service install) -->
+  <rule id="100700" level="12" frequency="2" timeframe="300">
+    <if_group>windows</if_group>
+    <field name="win.system.eventID">4624</field>
+    <same_field>user</same_field>
+    <description>Lateral Movement (remote logon / service install) — HIGH — Lateral movement: svc_backup network-logon to 2+ hosts</description>
+    <mitre>
+      <id>T1021.002</id>
+      <id>T1570</id>
+      <id>T1569.002</id>
+    </mitre>
+    <group>lateral_movement,</group>
+  </rule>
+
+  <!-- SOC-008 :: Unauthorized Account Creation / Privileged Group Change -->
+  <rule id="100800" level="14">
+    <if_group>windows</if_group>
+    <field name="win.system.eventID">4720</field>
+    <description>Unauthorized Account Creation / Privileged Group Change — CRITICAL — Unauthorized account 'backdoor_svc' created by j.doe</description>
+    <mitre>
+      <id>T1136.002</id>
+      <id>T1098</id>
+    </mitre>
+    <group>persistence,privilege_escalation,</group>
+  </rule>
+
+</group>

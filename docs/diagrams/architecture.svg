@@ -1,0 +1,236 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 820" font-family="'Rajdhani','Segoe UI',sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0c1311"/>
+      <stop offset="1" stop-color="#080d0c"/>
+    </linearGradient>
+    <pattern id="grid" width="34" height="34" patternUnits="userSpaceOnUse">
+      <path d="M34 0H0V34" fill="none" stroke="#16241f" stroke-width="1"/>
+    </pattern>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0 0L8 3L0 6Z" fill="#2f463e"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0 0L8 3L0 6Z" fill="#b8851f"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="11" markerHeight="11" refX="8" refY="3.2" orient="auto">
+      <path d="M0 0L8 3.2L0 6.4Z" fill="#ff4d4d"/>
+    </marker>
+    <style>
+      .lbl{fill:#d3e0da;font-weight:600;font-size:15px;letter-spacing:.5px}
+      .sub{fill:#6f8780;font-size:11px;font-family:'Share Tech Mono',monospace;letter-spacing:.3px}
+      .ip{fill:#4fd6d6;font-size:10.5px;font-family:'Share Tech Mono',monospace}
+      .zone{fill:#8aa39b;font-size:12px;font-weight:600;letter-spacing:3px;font-family:'Share Tech Mono',monospace}
+      .flow{fill:#6f8780;font-size:10px;font-family:'Share Tech Mono',monospace;letter-spacing:.5px}
+      .node{fill:#0e1614;stroke:#21342e;stroke-width:1.5;rx:4}
+      .icon{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    </style>
+  </defs>
+
+  <rect width="1180" height="820" fill="url(#bg)"/>
+  <rect width="1180" height="820" fill="url(#grid)"/>
+
+  <!-- frame ticks -->
+  <g stroke="#21342e" stroke-width="1">
+    <path d="M16 16h26M16 16v26" fill="none"/><path d="M1164 16h-26M1164 16v26" fill="none"/>
+    <path d="M16 804h26M16 804v-26" fill="none"/><path d="M1164 804h-26M1164 804v-26" fill="none"/>
+  </g>
+
+  <!-- title block -->
+  <text x="40" y="52" fill="#f0b429" font-size="24" font-weight="700" letter-spacing="2">CYBER DEFENSE SOC LAB</text>
+  <text x="40" y="72" class="sub">ENVIRONMENT ARCHITECTURE  ·  DOMAIN: CYBERLAB.LOCAL  ·  MITRE ATT&amp;CK ALIGNED</text>
+  <rect x="930" y="34" width="210" height="26" fill="none" stroke="#b8851f" stroke-width="1"/>
+  <text x="1035" y="51" text-anchor="middle" fill="#f0b429" font-size="11" letter-spacing="2" font-family="'Share Tech Mono',monospace">UNCLASSIFIED // TRAINING</text>
+
+  <!-- ===================== ADVERSARY ZONE ===================== -->
+  <rect x="40" y="100" width="250" height="680" fill="#100c0c" stroke="#3a1f1f" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <text x="60" y="126" class="zone" fill="#ff7a7a">ADVERSARY</text>
+
+  <!-- Kali attacker -->
+  <g>
+    <rect class="node" x="70" y="150" width="190" height="92" stroke="#b91d1d"/>
+    <g transform="translate(90,176)" class="icon" stroke="#ff4d4d">
+      <path d="M0 14C0 6 6 0 14 0s14 6 14 14"/>
+      <circle cx="9" cy="13" r="2.5" fill="#ff4d4d" stroke="none"/>
+      <circle cx="19" cy="13" r="2.5" fill="#ff4d4d" stroke="none"/>
+      <path d="M5 22h18"/>
+    </g>
+    <text x="132" y="180" class="lbl" fill="#ff8a8a">Kali Attacker</text>
+    <text x="132" y="200" class="sub">Offensive workstation</text>
+    <text x="132" y="218" class="ip">10.10.20.66</text>
+  </g>
+  <text x="80" y="270" class="flow" fill="#8a6f6f">EMULATES (synthetic):</text>
+  <text x="80" y="288" class="flow" fill="#8a6f6f">· password spraying</text>
+  <text x="80" y="304" class="flow" fill="#8a6f6f">· port / service scans</text>
+  <text x="80" y="320" class="flow" fill="#8a6f6f">· obfuscated PowerShell</text>
+  <text x="80" y="336" class="flow" fill="#8a6f6f">· privilege escalation</text>
+  <text x="80" y="352" class="flow" fill="#8a6f6f">· EICAR malware drop</text>
+
+  <!-- attack arrows into enterprise -->
+  <path d="M260 196 H326" fill="none" stroke="#ff4d4d" stroke-width="1.6" marker-end="url(#arrowRed)"/>
+  <text x="270" y="188" class="flow" fill="#ff7a7a">ATTACK TRAFFIC</text>
+
+  <!-- ===================== ENTERPRISE ZONE ===================== -->
+  <rect x="330" y="100" width="490" height="680" fill="#0b110f" stroke="#21342e" stroke-width="1.5"/>
+  <text x="350" y="126" class="zone">ENTERPRISE NETWORK</text>
+
+  <!-- perimeter / network monitoring -->
+  <g>
+    <rect class="node" x="352" y="150" width="446" height="70" stroke="#2f463e"/>
+    <g transform="translate(372,170)" class="icon" stroke="#f0b429">
+      <rect x="0" y="2" width="26" height="26" rx="2"/>
+      <path d="M0 11h26M13 2v26"/>
+    </g>
+    <text x="412" y="176" class="lbl">Network Monitoring · Firewall / TAP</text>
+    <text x="412" y="196" class="sub">Flow logs, connection attempts, packet capture — feeds the SIEM</text>
+    <text x="412" y="212" class="ip">perimeter sensor</text>
+  </g>
+  <path d="M575 220 V250" fill="none" stroke="#2f463e" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+  <!-- AD / Windows Server -->
+  <g>
+    <rect class="node" x="352" y="258" width="215" height="96" stroke="#2f463e"/>
+    <g transform="translate(372,282)" class="icon" stroke="#f0b429">
+      <rect x="0" y="0" width="26" height="11" rx="1.5"/>
+      <rect x="0" y="15" width="26" height="11" rx="1.5"/>
+      <circle cx="6" cy="5.5" r="1.5" fill="#3ddc84" stroke="none"/>
+      <circle cx="6" cy="20.5" r="1.5" fill="#3ddc84" stroke="none"/>
+    </g>
+    <text x="410" y="278" class="lbl">Windows Server</text>
+    <text x="410" y="297" class="sub">Domain Controller</text>
+    <text x="410" y="313" class="sub" fill="#8aa39b">Active Directory · DNS · GPO</text>
+    <text x="410" y="333" class="ip">WIN-DC01 · 10.10.10.10</text>
+    <text x="410" y="348" class="sub" fill="#b8851f">EventID 4625 / 4672 / 4720</text>
+  </g>
+
+  <!-- Linux server -->
+  <g>
+    <rect class="node" x="583" y="258" width="215" height="96" stroke="#2f463e"/>
+    <g transform="translate(603,282)" class="icon" stroke="#3ddc84">
+      <circle cx="13" cy="13" r="13"/>
+      <path d="M9 18c1-3 1-6 4-6s3 3 4 6M13 7v3"/>
+    </g>
+    <text x="641" y="278" class="lbl">Linux Server</text>
+    <text x="641" y="297" class="sub">Web / app host</text>
+    <text x="641" y="313" class="sub" fill="#8aa39b">sshd · auth.log · syslog</text>
+    <text x="641" y="333" class="ip">LNX-WEB01 · 10.10.10.40</text>
+    <text x="641" y="348" class="sub" fill="#b8851f">Failed password / sudo</text>
+  </g>
+
+  <!-- Windows clients -->
+  <g>
+    <rect class="node" x="352" y="368" width="446" height="92" stroke="#2f463e"/>
+    <g transform="translate(372,392)" class="icon" stroke="#f0b429">
+      <rect x="0" y="0" width="30" height="20" rx="1.5"/>
+      <path d="M11 24h8M9 20v4M21 20v4"/>
+    </g>
+    <text x="416" y="388" class="lbl">Windows Clients · Endpoints</text>
+    <text x="416" y="407" class="sub">Domain-joined workstations — primary execution surface</text>
+    <text x="416" y="425" class="ip">WIN-CLIENT01 · 10.10.20.30</text>
+    <text x="640" y="425" class="ip">WIN-CLIENT02 · 10.10.20.31</text>
+    <text x="416" y="447" class="sub" fill="#b8851f">Process creation (4688) · PowerShell (4104) · Sysmon</text>
+  </g>
+
+  <!-- SYSMON layer -->
+  <g>
+    <rect x="352" y="476" width="446" height="56" fill="#141a0f" stroke="#5a4a16" stroke-width="1.4"/>
+    <g transform="translate(372,490)" class="icon" stroke="#ffd34e">
+      <circle cx="13" cy="13" r="6"/>
+      <path d="M13 0v5M13 21v5M0 13h5M21 13h5M4 4l3.5 3.5M22 22l-3.5-3.5M22 4l-3.5 3.5M4 22l3.5-3.5"/>
+    </g>
+    <text x="416" y="500" class="lbl" fill="#ffd34e">Sysmon — Endpoint Telemetry Agent</text>
+    <text x="416" y="520" class="sub">Deep process/network/file/registry visibility on every Windows host (config in /config/sysmon)</text>
+  </g>
+
+  <!-- host -> sysmon arrows -->
+  <path d="M455 460 V476" fill="none" stroke="#5a4a16" stroke-width="1.3" marker-end="url(#arrowAmber)"/>
+  <path d="M695 460 V476" fill="none" stroke="#5a4a16" stroke-width="1.3" marker-end="url(#arrowAmber)"/>
+
+  <!-- shipping arrows -->
+  <text x="404" y="556" class="flow" fill="#b8851f">WINLOGBEAT · WAZUH AGENT — log shipping</text>
+  <path d="M575 532 V560 H840 V310 H846" fill="none" stroke="#b8851f" stroke-width="1.5" marker-end="url(#arrowAmber)" stroke-dasharray="5 3"/>
+  <path d="M575 354 V372" fill="none" stroke="#2f463e" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- ===================== SOC / SIEM ZONE ===================== -->
+  <rect x="858" y="100" width="282" height="680" fill="#0a1310" stroke="#1f8a52" stroke-width="1.5"/>
+  <text x="878" y="126" class="zone" fill="#3ddc84">SOC · DETECTION</text>
+
+  <!-- Wazuh SIEM -->
+  <g>
+    <rect class="node" x="878" y="150" width="242" height="120" stroke="#1f8a52"/>
+    <g transform="translate(898,178)" class="icon" stroke="#3ddc84">
+      <path d="M14 0l13 5v8c0 8-6 13-13 16C6 26 1 21 1 13V5z"/>
+      <path d="M8 13l4 4 7-8"/>
+    </g>
+    <text x="938" y="176" class="lbl" fill="#9ff0c0">Wazuh SIEM</text>
+    <text x="938" y="196" class="sub">Manager + ruleset</text>
+    <text x="938" y="214" class="sub" fill="#8aa39b">Decoders · correlation · MITRE</text>
+    <text x="938" y="234" class="ip">WIN-SIEM · 10.10.10.50</text>
+    <text x="938" y="254" class="sub" fill="#3ddc84">local_rules.xml (8 rules)</text>
+  </g>
+  <path d="M998 270 V300" fill="none" stroke="#1f8a52" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+  <!-- Detection Engine -->
+  <g>
+    <rect class="node" x="878" y="308" width="242" height="104" stroke="#1f8a52"/>
+    <g transform="translate(898,332)" class="icon" stroke="#f0b429">
+      <circle cx="13" cy="13" r="4"/>
+      <path d="M13 0v4M13 22v4M0 13h4M22 13h4M3.8 3.8l2.8 2.8M19.4 19.4l2.8 2.8M22.2 3.8l-2.8 2.8M3.8 22.2l2.8-2.8"/>
+    </g>
+    <text x="938" y="330" class="lbl">Detection Engine</text>
+    <text x="938" y="349" class="sub">Sliding-window correlation</text>
+    <text x="938" y="367" class="sub" fill="#8aa39b">8 rules · stateful thresholds</text>
+    <text x="938" y="387" class="sub" fill="#b8851f">raises MITRE-mapped alerts</text>
+    <text x="938" y="404" class="ip">soclab/detection_engine.py</text>
+  </g>
+  <path d="M998 412 V442" fill="none" stroke="#1f8a52" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+  <!-- Elastic Stack -->
+  <g>
+    <rect class="node" x="878" y="450" width="242" height="90" stroke="#1f8a52"/>
+    <g transform="translate(898,472)" class="icon" stroke="#4fd6d6">
+      <rect x="0" y="0" width="26" height="7" rx="2"/>
+      <rect x="0" y="10" width="26" height="7" rx="2"/>
+      <rect x="0" y="20" width="26" height="7" rx="2"/>
+    </g>
+    <text x="938" y="472" class="lbl" fill="#a7eaea">Elastic Stack</text>
+    <text x="938" y="491" class="sub">Index · search · Kibana</text>
+    <text x="938" y="509" class="sub" fill="#8aa39b">Filebeat / Winlogbeat ingest</text>
+    <text x="938" y="528" class="ip">storage + visualisation</text>
+  </g>
+  <path d="M998 540 V570" fill="none" stroke="#1f8a52" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+  <!-- Tactical Console -->
+  <g>
+    <rect class="node" x="878" y="578" width="242" height="120" stroke="#f0b429" stroke-width="2"/>
+    <g transform="translate(898,604)" class="icon" stroke="#f0b429">
+      <rect x="0" y="0" width="28" height="20" rx="2"/>
+      <circle cx="14" cy="10" r="6"/>
+      <path d="M14 4v6l4 2"/>
+    </g>
+    <text x="938" y="600" class="lbl" fill="#f0b429">Tactical Console</text>
+    <text x="938" y="620" class="sub">Live SOC command UI</text>
+    <text x="938" y="638" class="sub" fill="#8aa39b">Radar · DEFCON · triage</text>
+    <text x="938" y="658" class="sub" fill="#8aa39b">Forensics · IR workflow</text>
+    <text x="938" y="680" class="ip">http://127.0.0.1:8000</text>
+  </g>
+
+  <!-- Forensics + IR side note -->
+  <g>
+    <rect x="878" y="712" width="242" height="52" fill="#0e1614" stroke="#21342e" stroke-width="1.2"/>
+    <text x="896" y="734" class="sub" fill="#d3e0da">FORENSICS · IR · REPORTING</text>
+    <text x="896" y="752" class="flow">timeline · IOCs · chain-of-custody · reports</text>
+  </g>
+
+  <!-- big shipping arrow enterprise -> SIEM -->
+  <path d="M798 186 H872" fill="none" stroke="#1f8a52" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <text x="806" y="178" class="flow" fill="#3ddc84">TELEMETRY</text>
+
+  <!-- legend -->
+  <g transform="translate(40,792)">
+    <text class="flow" x="0" y="0">LEGEND:</text>
+    <line x1="62" y1="-4" x2="86" y2="-4" stroke="#ff4d4d" stroke-width="1.6"/><text class="flow" x="92" y="0">attack</text>
+    <line x1="140" y1="-4" x2="164" y2="-4" stroke="#b8851f" stroke-width="1.6" stroke-dasharray="4 2"/><text class="flow" x="170" y="0">log shipping</text>
+    <line x1="262" y1="-4" x2="286" y2="-4" stroke="#1f8a52" stroke-width="1.6"/><text class="flow" x="292" y="0">detection pipeline</text>
+  </g>
+</svg>

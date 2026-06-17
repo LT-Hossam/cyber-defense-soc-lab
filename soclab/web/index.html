@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CYBER DEFENSE SOC · TACTICAL CONSOLE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <!-- scanline + grain overlay -->
+  <div class="crt" aria-hidden="true"></div>
+
+  <div class="shell">
+    <!-- ───────────────────────── COMMAND BAR ───────────────────────── -->
+    <header class="cmdbar">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 40 40" width="34" height="34" aria-hidden="true">
+            <path d="M20 2 L35 8 V20 C35 30 28 36 20 38 C12 36 5 30 5 20 V8 Z"
+                  fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M20 9 L29 12.5 V20 C29 26 25 30 20 31.5 C15 30 11 26 11 20 V12.5 Z"
+                  fill="currentColor" opacity="0.12"/>
+            <path d="M14 20 l4 4 l8 -9" fill="none" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div class="brand-title">CYBER&nbsp;DEFENSE&nbsp;SOC</div>
+          <div class="brand-sub">TACTICAL OPERATIONS CONSOLE · v1.0</div>
+        </div>
+      </div>
+
+      <div class="readiness" id="readiness">
+        <span class="readiness-label">READINESS</span>
+        <span class="readiness-value" id="readiness-value">— — —</span>
+      </div>
+
+      <div class="cmd-actions">
+        <div class="clock" id="clock">--:--:-- UTC</div>
+        <button class="btn btn-fire" id="btn-sim-all">▶ RUN FULL SIMULATION</button>
+        <button class="btn btn-ghost" id="btn-reset" title="Clear all events and alerts">RESET</button>
+        <div class="status-dot" id="status-dot" title="link status"></div>
+      </div>
+    </header>
+
+    <div class="body">
+      <!-- ───────────────────────── NAV RAIL ───────────────────────── -->
+      <nav class="rail">
+        <button class="nav-item active" data-view="overview">
+          <span class="nav-glyph">◈</span><span>OVERVIEW</span></button>
+        <button class="nav-item" data-view="threats">
+          <span class="nav-glyph">⚑</span><span>THREATS</span>
+          <span class="nav-badge" id="badge-threats">0</span></button>
+        <button class="nav-item" data-view="incidents">
+          <span class="nav-glyph">⊕</span><span>INCIDENTS</span>
+          <span class="nav-badge" id="badge-incidents">0</span></button>
+        <button class="nav-item" data-view="users">
+          <span class="nav-glyph">⊜</span><span>USER ACTIVITY</span></button>
+        <button class="nav-item" data-view="detections">
+          <span class="nav-glyph">⌖</span><span>DETECTIONS</span></button>
+        <button class="nav-item" data-view="forensics">
+          <span class="nav-glyph">⎔</span><span>FORENSICS</span></button>
+
+        <div class="rail-foot">
+          <div class="rail-stat"><span>EVENTS</span><b id="rail-events">0</b></div>
+          <div class="rail-stat"><span>ALERTS</span><b id="rail-alerts">0</b></div>
+          <div class="rail-classif">UNCLASSIFIED // TRAINING</div>
+        </div>
+      </nav>
+
+      <!-- ───────────────────────── MAIN STAGE ───────────────────────── -->
+      <main class="stage">
+
+        <!-- ===================== OVERVIEW ===================== -->
+        <section class="view active" id="view-overview">
+          <div class="grid-overview">
+            <!-- radar signature -->
+            <div class="panel panel-radar">
+              <div class="panel-head"><span>THREAT RADAR</span><span class="panel-tag">LIVE</span></div>
+              <div class="radar-wrap">
+                <div class="radar">
+                  <div class="radar-rings"></div>
+                  <div class="radar-cross"></div>
+                  <div class="radar-sweep"></div>
+                  <div class="radar-blips" id="radar-blips"></div>
+                </div>
+                <div class="radar-legend">
+                  <span><i class="dot crit"></i>CRITICAL</span>
+                  <span><i class="dot high"></i>HIGH</span>
+                  <span><i class="dot med"></i>MEDIUM</span>
+                  <span><i class="dot low"></i>LOW</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- KPI tiles -->
+            <div class="kpis">
+              <div class="kpi"><div class="kpi-val" id="kpi-events">0</div><div class="kpi-lab">EVENTS INGESTED</div></div>
+              <div class="kpi"><div class="kpi-val" id="kpi-alerts">0</div><div class="kpi-lab">ALERTS RAISED</div></div>
+              <div class="kpi crit"><div class="kpi-val" id="kpi-crit">0</div><div class="kpi-lab">CRITICAL</div></div>
+              <div class="kpi"><div class="kpi-val" id="kpi-open">0</div><div class="kpi-lab">OPEN INCIDENTS</div></div>
+            </div>
+
+            <!-- severity bars -->
+            <div class="panel panel-sev">
+              <div class="panel-head"><span>SEVERITY DISTRIBUTION</span></div>
+              <div class="sevbars" id="sevbars"></div>
+            </div>
+
+            <!-- mitre coverage -->
+            <div class="panel panel-mitre">
+              <div class="panel-head"><span>MITRE ATT&CK — OBSERVED TECHNIQUES</span></div>
+              <div class="mitre-chips" id="mitre-chips"></div>
+            </div>
+
+            <!-- live ticker -->
+            <div class="panel panel-ticker">
+              <div class="panel-head"><span>LIVE EVENT FEED</span><span class="panel-tag pulse">STREAMING</span></div>
+              <div class="ticker" id="ticker"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================== THREATS ===================== -->
+        <section class="view" id="view-threats">
+          <div class="panel">
+            <div class="panel-head">
+              <span>ACTIVE THREAT FEED</span>
+              <div class="filters">
+                <button class="chip-f active" data-sev="all">ALL</button>
+                <button class="chip-f" data-sev="critical">CRIT</button>
+                <button class="chip-f" data-sev="high">HIGH</button>
+                <button class="chip-f" data-sev="medium">MED</button>
+                <button class="chip-f" data-sev="low">LOW</button>
+              </div>
+            </div>
+            <div class="alert-list" id="alert-list"></div>
+          </div>
+        </section>
+
+        <!-- ===================== INCIDENTS ===================== -->
+        <section class="view" id="view-incidents">
+          <div class="ir-flow">
+            <div class="ir-stage" data-stage="identification"><b>1 · IDENTIFICATION</b><span id="ir-id">0</span></div>
+            <div class="ir-stage" data-stage="containment"><b>2 · CONTAINMENT</b><span id="ir-cont">0</span></div>
+            <div class="ir-stage" data-stage="eradication"><b>3 · ERADICATION</b><span id="ir-erad">0</span></div>
+            <div class="ir-stage" data-stage="recovery"><b>4 · RECOVERY</b><span id="ir-rec">0</span></div>
+            <div class="ir-stage" data-stage="closed"><b>5 · LESSONS LEARNED</b><span id="ir-closed">0</span></div>
+          </div>
+          <div class="incident-grid" id="incident-grid"></div>
+        </section>
+
+        <!-- ===================== USERS ===================== -->
+        <section class="view" id="view-users">
+          <div class="grid-users">
+            <div class="panel">
+              <div class="panel-head"><span>ACCOUNT ACTIVITY</span></div>
+              <table class="data-table" id="user-table">
+                <thead><tr><th>ACCOUNT</th><th>EVENTS</th><th>RISK</th><th>STATUS</th></tr></thead>
+                <tbody id="user-tbody"></tbody>
+              </table>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><span>SUSPICIOUS SOURCE IPs</span></div>
+              <table class="data-table" id="ip-table">
+                <thead><tr><th>SOURCE IP</th><th>HITS</th><th>ASSESSMENT</th></tr></thead>
+                <tbody id="ip-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================== DETECTIONS ===================== -->
+        <section class="view" id="view-detections">
+          <div class="panel panel-sim">
+            <div class="panel-head"><span>ATTACK SIMULATION CONTROL</span><span class="panel-tag warn">RED TEAM</span></div>
+            <div class="sim-buttons" id="sim-buttons"></div>
+            <div class="sim-log" id="sim-log">Standing by. Launch a scenario to generate telemetry.</div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><span>DETECTION RULE CATALOGUE</span></div>
+            <div class="rule-grid" id="rule-grid"></div>
+          </div>
+        </section>
+
+        <!-- ===================== FORENSICS ===================== -->
+        <section class="view" id="view-forensics">
+          <div class="forensics-top">
+            <div class="panel">
+              <div class="panel-head"><span>INDICATORS OF COMPROMISE</span></div>
+              <div class="ioc-cols" id="ioc-cols"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-head">
+                <span>FORENSIC REPORT</span>
+                <button class="btn btn-small" id="btn-report">⎙ GENERATE REPORT</button>
+              </div>
+              <pre class="report-pre" id="report-pre">Press “GENERATE REPORT” to compile a case file from current evidence.</pre>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><span>INVESTIGATION TIMELINE</span></div>
+            <div class="timeline" id="timeline"></div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- alert detail drawer -->
+  <div class="drawer" id="drawer">
+    <div class="drawer-inner">
+      <button class="drawer-close" id="drawer-close">✕</button>
+      <div id="drawer-body"></div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

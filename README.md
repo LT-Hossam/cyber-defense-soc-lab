@@ -1,3 +1,5 @@
+<img width="1456" height="702" alt="SOC-Lab-preview2" src="https://github.com/user-attachments/assets/95950f0b-b1d3-43c3-89b8-f2c02f78c74d" />
+
 # Cyber Defense SOC Lab
 
 > **A self-contained, runnable Security Operations Center (SOC) simulation** — detection engineering, attack simulation, digital forensics, and incident response in one portfolio-grade package, fronted by a tactical command-console UI.
